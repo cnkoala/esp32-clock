@@ -1,0 +1,16 @@
+{
+  "codename": "TimerFont",
+  "ttf_path": "\\assets\\fonts\\Lets-go-Digital.TTF",
+  "bin_path": "\\assets\\fonts\\ui_font_TimerFont.bin",
+  "c_path": "\\assets\\fonts\\ui_font_TimerFont.c",
+  "cfg_path": "\\assets\\fonts\\ui_font_TimerFont.fcfg",
+  "size": 120,
+  "bpp": 4,
+  "letters": 0,
+  "ranges": [
+    "0x20-0x7f"
+  ],
+  "symbols": "",
+  "customparams": "--no-compress --no-prefilter",
+  "uploaded": false
+}
