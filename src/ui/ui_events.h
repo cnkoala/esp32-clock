@@ -7,8 +7,16 @@
 #define _UI_EVENTS_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
+
+    extern bool isTimerRunning;
+    extern bool isTimerReset;
+
+    void TimerStartHandle(lv_event_t *e);
+    void TimerStopHandle(lv_event_t *e);
+    void TimerResetHandle(lv_event_t *e);
 
 #ifdef __cplusplus
 } /*extern "C"*/

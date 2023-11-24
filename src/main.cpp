@@ -1,18 +1,5 @@
 //*********************************************************************************************************/
 //  WT32-SC01-PLUS template for platform.io
-//  created by Frits Jan / productbakery on 11 oktober 2022
-//
-//
-// When working with the squareline editor from lvgl, set the project in squareline to:
-// - Arduino, with TFT_eSPI (which we cannot use, but will replace with LovyanGFX in this main.cpp file)
-// - 480 x 320, 16 bit display
-//
-// Export the template project AND export the UI Files
-// You will get a project directory with two directories inside, 'ui' and 'libraries'
-// From the libraries directory, copy the lv_conf.h to this projects /src/ directory (overwrite the old one)
-// From the ui directory, copy all files to this projects src/ui/ directory (you can empty the ui directory first if needed)
-// The ui.ino file can/should be deleted because this main.cpp files takes over.
-//
 //*********************************************************************************************************/
 
 #include "main.h"
@@ -54,7 +41,8 @@ void printLocalTime()
   // Serial0.print("Second: ");
   // Serial0.println(&timeinfo, "%S");
 
-  Serial0.println("Time variables");
+  // Serial0.println("Time variables");
+
   char timeHour[3];
   char timeMinute[3];
   char timeWeekDay[10];
@@ -85,10 +73,6 @@ void setup()
 {
   // debug Serial0 init
   Serial0.begin(115200);
-
-  // AS5600 init
-  // Wire1.begin(AS5600_SDA, AS5600_SCL, AS5600_BAUD);
-  // as5600.begin();
 
   tft.begin();
   tft.setRotation(0);
@@ -151,12 +135,6 @@ void loop()
 {
   lv_timer_handler();
 
-  static uint32_t lastMillis1 = 0;
-  static uint32_t lastMillis2 = 0;
-  static bool isWifiConnected = false;
-  static bool isGotTime = false;
-  static bool isColonHidden = false;
-
   if (isWifiConnected && !isGotTime)
   {
     configTime(gmtOffset_sec, daylightOffset_sec, ntpServer1, ntpServer2, ntpServer3);
@@ -166,6 +144,18 @@ void loop()
       isGotTime = true;
       return;
     }
+  }
+
+  if (isTimerReset)
+  {
+    isTimerRunning = false;
+    timerSecond = 0;
+    timerMintue = 0;
+    timerHour = 0;
+    lv_label_set_text_fmt(ui_TImeSecond, "%02d", timerSecond);
+    lv_label_set_text_fmt(ui_TImeMinute, "%02d", timerMintue);
+    lv_label_set_text_fmt(ui_TImeHour, "%02d", timerHour);
+    isTimerReset = false;
   }
 
   /* delay 1s */
@@ -194,6 +184,29 @@ void loop()
     {
       lv_obj_add_flag(ui_HeadWifiOn, LV_OBJ_FLAG_HIDDEN);
       lv_obj_clear_flag(ui_HeadWifiOff, LV_OBJ_FLAG_HIDDEN);
+    }
+
+    // timer caculate
+    if (isTimerRunning)
+    {
+      if (timerSecond < 59)
+      {
+        timerSecond++;
+      }
+      else
+      {
+        timerMintue++;
+        timerSecond = 0;
+      }
+      if (timerMintue >= 60)
+      {
+        timerHour++;
+        timerMintue = 0;
+      }
+
+      lv_label_set_text_fmt(ui_TImeSecond, "%02d", timerSecond);
+      lv_label_set_text_fmt(ui_TImeMinute, "%02d", timerMintue);
+      lv_label_set_text_fmt(ui_TImeHour, "%02d", timerHour);
     }
   }
 

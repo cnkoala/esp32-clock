@@ -15,7 +15,6 @@
 //
 //*********************************************************************************************************/
 
-#include "utils.h"
 #include <esp_heap_caps.h>
 #include <WiFi.h>
 #include <esp_wifi.h>
@@ -230,3 +229,17 @@ void SnapShotScreen()
   }
   SD.end();
 }
+
+// period set
+static uint32_t lastMillis1 = 0;
+static uint32_t lastMillis2 = 0;
+
+// wifi set
+static bool isWifiConnected = false;
+static bool isGotTime = false;
+static bool isColonHidden = false;
+
+// timer number set
+uint8_t timerSecond = 0;
+uint8_t timerMintue = 0;
+uint8_t timerHour = 0;
