@@ -20,6 +20,17 @@
 #include <esp_wifi.h>
 #include <SD.h>
 
+// insert your wifi name
+const char *ssid = "";
+// insert your wifi password
+const char *password = "";
+
+const char *ntpServer1 = "cn.pool.ntp.org";
+const char *ntpServer2 = "asia.pool.ntp.org";
+const char *ntpServer3 = "ntp.aliyun.com";
+const long gmtOffset_sec = 8 * 60 * 60;
+const int daylightOffset_sec = 0;
+
 // define log level
 #define LOG_LEVEL 5
 
@@ -33,7 +44,8 @@
 SPIClass sdSpi = SPIClass(HSPI);
 uint32_t currentMills;
 char SDFileName[100];
-File myFile;
+File root;
+File myfile;
 
 // LGFX define
 #define LGFX_USE_V1
@@ -187,47 +199,110 @@ void my_touch_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data)
     data->point.y = touchY;
 
 #if DEBUG_TOUCH != 0
-    Serial.print("Data x ");
-    Serial.println(touchX);
-    Serial.print("Data y ");
-    Serial.println(touchY);
+    Serial0.print("Data x ");
+    Serial0.println(touchX);
+    Serial0.print("Data y ");
+    Serial0.println(touchY);
 #endif
   }
 }
 
 // lv debugging can be set in lv_conf.h
 #if LV_USE_LOG != 0
-/* Serial debugging */
+/* Serial0 debugging */
 void my_print(const char *buf)
 {
-  Serial.printf(buf);
-  Serial.flush();
+  Serial0.printf(buf);
+  Serial0.flush();
 }
 #endif
 
-// snap shot screen function
-void SnapShotScreen()
+char *fileNameList[100];
+uint8_t fileNumber = 0;
+
+// sd test
+void SdInit()
 {
   if (!SD.begin(SD_CS, sdSpi))
   {
     Serial0.print(".");
   }
   Serial0.println("\r\nSD card Ready!");
-  currentMills = millis();
-  sprintf(SDFileName, "/%d.txt", currentMills);
-  log_i("SDFileName is: %s", SDFileName);
-  myFile = SD.open(SDFileName, FILE_WRITE);
-  if (myFile)
+  if (!SD.begin())
   {
-    myFile.printf("%s\n", SDFileName);
-    myFile.close();
-    log_i("Write SD finished.");
+    Serial0.println("Card Mount Failed");
+    return;
   }
   else
   {
-    log_e("Write SD failed!");
+    Serial0.println("Card Mount Success");
   }
-  SD.end();
+  uint8_t cardType = SD.cardType();
+
+  if (cardType == CARD_NONE)
+  {
+    Serial0.println("No SD card attached");
+    return;
+  }
+  Serial0.print("SD Card Type: ");
+  if (cardType == CARD_MMC)
+  {
+    Serial0.println("MMC");
+  }
+  else if (cardType == CARD_SD)
+  {
+    Serial0.println("SDSC");
+  }
+  else if (cardType == CARD_SDHC)
+  {
+    Serial0.println("SDHC");
+  }
+  else
+  {
+    Serial0.println("UNKNOWN");
+  }
+
+  lv_fs_fatfs_init();
+}
+
+void sd1Test(void)
+{
+  lv_fs_file_t f;
+  lv_fs_res_t res;
+  res = lv_fs_open(&f, "S:1.jpg", LV_FS_MODE_RD);
+  if (res != LV_FS_RES_OK)
+  {
+    Serial0.println("Open fail");
+  }
+  else
+  {
+    Serial0.println("Open OK");
+    uint32_t read_num;
+    uint8_t buf[8];
+    res = lv_fs_read(&f, buf, 8, &read_num);
+    Serial0.printf("read:%s", buf);
+    lv_fs_close(&f);
+  }
+}
+
+void sdSearch(void)
+{
+  lv_fs_file_t f;
+  lv_fs_res_t res;
+  res = lv_fs_open(&f, "S:1.jpg", LV_FS_MODE_RD);
+  if (res != LV_FS_RES_OK)
+  {
+    Serial0.println("Open fail");
+  }
+  else
+  {
+    Serial0.println("Open OK");
+    uint32_t read_num;
+    uint8_t buf[8];
+    res = lv_fs_read(&f, buf, 8, &read_num);
+    Serial0.printf("read:%s", buf);
+    lv_fs_close(&f);
+  }
 }
 
 // period set
@@ -250,3 +325,10 @@ static bool isColonHidden = false;
 uint8_t timerSecond = 0;
 uint8_t timerMintue = 0;
 uint8_t timerHour = 0;
+
+// init picture
+uint8_t btnShowTime = 0;
+bool isShow = false;
+char fileName[20];
+int picNum;
+lv_obj_t *wp;

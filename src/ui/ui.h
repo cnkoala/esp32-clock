@@ -46,6 +46,8 @@ extern lv_obj_t *ui_BottomGroup;
 extern lv_obj_t *ui_BottomBg;
 void ui_event_BottomTimerImage( lv_event_t * e);
 extern lv_obj_t *ui_BottomTimerImage;
+void ui_event_BottomLogoImage( lv_event_t * e);
+extern lv_obj_t *ui_BottomLogoImage;
 extern lv_obj_t *ui_BgSlider;
 // SCREEN: ui_TimerScreen
 void ui_TimerScreen_screen_init(void);
@@ -70,6 +72,15 @@ extern lv_obj_t *ui_StopBtnImage;
 extern lv_obj_t *ui_StopBtnLabel;
 void ui_event_TimerExitImg( lv_event_t * e);
 extern lv_obj_t *ui_TimerExitImg;
+// SCREEN: ui_LogoScreen
+void ui_LogoScreen_screen_init(void);
+extern lv_obj_t *ui_LogoScreen;
+void ui_event_LogoNextBtn( lv_event_t * e);
+extern lv_obj_t *ui_LogoNextBtn;
+extern lv_obj_t *ui_LogoBtnImage;
+extern lv_obj_t *ui_LogoBtnLabel;
+void ui_event_LogoExitImg( lv_event_t * e);
+extern lv_obj_t *ui_LogoExitImg;
 extern lv_obj_t *ui____initial_actions0;
 
 LV_IMG_DECLARE( ui_img_ebike_bg_png);   // assets\ebike_bg.png
@@ -80,9 +91,12 @@ LV_IMG_DECLARE( ui_img_652517623);   // assets\wifi-on.png
 LV_IMG_DECLARE( ui_img_1560645021);   // assets\wifi-off.png
 LV_IMG_DECLARE( ui_img_menu_line_png);   // assets\menu_line.png
 LV_IMG_DECLARE( ui_img_clock_fill_png);   // assets\clock_fill.png
+LV_IMG_DECLARE( ui_img_bmw_png);   // assets\BMW.png
 LV_IMG_DECLARE( ui_img_car_png);   // assets\car.png
 LV_IMG_DECLARE( ui_img_stop_png);   // assets\stop.png
 LV_IMG_DECLARE( ui_img_400942075);   // assets\Exit-2.png
+LV_IMG_DECLARE( ui_img_next_png);   // assets\next.png
+LV_IMG_DECLARE( ui_img_exitblack_png);   // assets\ExitBlack.png
 
 LV_FONT_DECLARE( ui_font_Big);
 LV_FONT_DECLARE( ui_font_Medium);

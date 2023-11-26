@@ -5,15 +5,6 @@
 #include "main.h"
 #include "time.h"
 
-const char *ssid = "ChinaNet";
-const char *password = "87842950";
-
-const char *ntpServer1 = "cn.pool.ntp.org";
-const char *ntpServer2 = "asia.pool.ntp.org";
-const char *ntpServer3 = "ntp.aliyun.com";
-const long gmtOffset_sec = 8 * 60 * 60;
-const int daylightOffset_sec = 0;
-
 /* function */
 void printLocalTime()
 {
@@ -23,23 +14,6 @@ void printLocalTime()
     Serial0.println("Failed to obtain time");
     return;
   }
-  // Serial0.println(&timeinfo, "%A, %B %d %Y %H:%M:%S zone %Z %z");
-  // Serial0.print("Day of week: ");
-  // Serial0.println(&timeinfo, "%A");
-  // Serial0.print("Month: ");
-  // Serial0.println(&timeinfo, "%B");
-  // Serial0.print("Day of Month: ");
-  // Serial0.println(&timeinfo, "%d");
-  // Serial0.print("Year: ");
-  // Serial0.println(&timeinfo, "%Y");
-  // Serial0.print("Hour: ");
-  // Serial0.println(&timeinfo, "%H");
-  // Serial0.print("Hour (12 hour format): ");
-  // Serial0.println(&timeinfo, "%I");
-  // Serial0.print("Minute: ");
-  // Serial0.println(&timeinfo, "%M");
-  // Serial0.print("Second: ");
-  // Serial0.println(&timeinfo, "%S");
 
   // Serial0.println("Time variables");
 
@@ -75,6 +49,9 @@ void setup()
   tft.setRotation(0);
   tft.setBrightness(screenBackLight);
 
+  sdSpi.begin(SD_CLK, SD_MISO, SD_MOSI, SD_CS);
+  SdInit();
+
   lv_init();
 
 #if LV_USE_LOG != 0
@@ -82,8 +59,8 @@ void setup()
 #endif
 
   // lv_disp_draw_buf_init(&draw_buf, buf, buf2, screenWidth * 100);
-  buf = (lv_color_t *)heap_caps_aligned_calloc(64, 1, screenWidth * screenHeight * 2, MALLOC_CAP_SPIRAM);
-  buf2 = (lv_color_t *)heap_caps_aligned_calloc(64, 1, screenWidth * screenHeight * 2, MALLOC_CAP_SPIRAM);
+  buf = (lv_color_t *)heap_caps_calloc(1, screenWidth * screenHeight * 2, MALLOC_CAP_SPIRAM);
+  buf2 = (lv_color_t *)heap_caps_calloc(1, screenWidth * screenHeight * 2, MALLOC_CAP_SPIRAM);
   lv_disp_draw_buf_init(&draw_buf, buf, buf2, screenWidth * screenHeight * 2);
 
   /*Initialize the display*/
@@ -121,7 +98,7 @@ void setup()
 
   // Init and get the time
 
-  printLocalTime();
+  // printLocalTime();
 
   // disconnect WiFi as it's no longer needed
   // WiFi.disconnect(true);
@@ -158,12 +135,23 @@ void loop()
     isTimerReset = false;
   }
 
+  if (isLogoReset)
+  {
+    btnShowTime = 0;
+    isShow = false;
+    if (wp)
+    {
+      lv_obj_del(wp);
+    }
+    isLogoReset = false;
+  }
+
   /* delay 1s */
   if (millis() - lastMillis1 > 1000)
   {
     lastMillis1 = millis();
 
-    log_i("Brightness: %d", screenBackLight);
+    printLocalTime();
 
     if (WiFi.status() == WL_CONNECTED)
     {
@@ -229,6 +217,32 @@ void loop()
         isBgadjusted = false;
       }
     }
+
+    // show picture
+
+    if (isLogoNext)
+    {
+      wp = lv_img_create(ui_LogoScreen);
+      picNum = random(1, 50);
+      sprintf(fileName, "S:%d.jpg", picNum);
+      log_i("Random File name is: %s.", fileName);
+      lv_img_set_src(wp, fileName);
+      lv_obj_center(wp);
+      lv_obj_set_y(wp, -30);
+      isShow = true;
+      isLogoNext = false;
+      lv_obj_add_flag(ui_LogoNextBtn, LV_OBJ_FLAG_HIDDEN);
+    }
+    if (isShow)
+    {
+      btnShowTime++;
+    }
+    if (btnShowTime >= 5)
+    {
+      lv_obj_clear_flag(ui_LogoNextBtn, LV_OBJ_FLAG_HIDDEN);
+      isShow = false;
+      btnShowTime = 0;
+    }
   }
 
   /* delay 3s */
@@ -236,7 +250,12 @@ void loop()
   {
     lastMillis2 = millis();
 
-    printLocalTime();
+    // wp = lv_img_create(lv_scr_act());
+    // lv_img_set_src(wp, "S:1.jpg");
+    // lv_obj_center(wp);
+    // picNum = random(1, 50);
+    // sprintf(fileName, "S:%d.jpg", picNum);
+    // log_i("Random File name is: %s.", fileName);
   }
 
   delay(10);

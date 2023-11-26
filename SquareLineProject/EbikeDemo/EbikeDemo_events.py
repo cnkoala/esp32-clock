@@ -18,3 +18,7 @@ def TimerStopHandle(event_struct):
 def TimerResetHandle(event_struct):
     return
 
+
+def exitLogo(event_struct):
+    return
+

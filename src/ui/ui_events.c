@@ -7,6 +7,8 @@
 
 bool isTimerRunning = false;
 bool isTimerReset = false;
+bool isLogoNext = false;
+bool isLogoReset = false;
 
 void TimerStartHandle(lv_event_t *e)
 {
@@ -26,4 +28,16 @@ void TimerResetHandle(lv_event_t *e)
 	isTimerReset = true;
 	_ui_flag_modify(ui_TimerStopBtn, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_ADD);
 	_ui_flag_modify(ui_TimerStartBtn, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
+}
+
+void LogoNextHandle(lv_event_t *e)
+{
+	// Your code here
+	isLogoNext = true;
+}
+
+void exitLogo(lv_event_t *e)
+{
+	// Your code here
+	isLogoReset = true;
 }

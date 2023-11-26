@@ -41,6 +41,8 @@ lv_obj_t *ui_BottomGroup;
 lv_obj_t *ui_BottomBg;
 void ui_event_BottomTimerImage( lv_event_t * e);
 lv_obj_t *ui_BottomTimerImage;
+void ui_event_BottomLogoImage( lv_event_t * e);
+lv_obj_t *ui_BottomLogoImage;
 lv_obj_t *ui_BgSlider;
 
 
@@ -67,6 +69,17 @@ lv_obj_t *ui_StopBtnImage;
 lv_obj_t *ui_StopBtnLabel;
 void ui_event_TimerExitImg( lv_event_t * e);
 lv_obj_t *ui_TimerExitImg;
+
+
+// SCREEN: ui_LogoScreen
+void ui_LogoScreen_screen_init(void);
+lv_obj_t *ui_LogoScreen;
+void ui_event_LogoNextBtn( lv_event_t * e);
+lv_obj_t *ui_LogoNextBtn;
+lv_obj_t *ui_LogoBtnImage;
+lv_obj_t *ui_LogoBtnLabel;
+void ui_event_LogoExitImg( lv_event_t * e);
+lv_obj_t *ui_LogoExitImg;
 lv_obj_t *ui____initial_actions0;
 const lv_img_dsc_t *ui_imgset_548856303[1] = {&ui_img_400942075};
 
@@ -85,6 +98,12 @@ void ui_event_BottomTimerImage( lv_event_t * e) {
     lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
 if ( event_code == LV_EVENT_CLICKED) {
       _ui_screen_change( &ui_TimerScreen, LV_SCR_LOAD_ANIM_NONE, 0, 0, &ui_TimerScreen_screen_init);
+}
+}
+void ui_event_BottomLogoImage( lv_event_t * e) {
+    lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
+if ( event_code == LV_EVENT_CLICKED) {
+      _ui_screen_change( &ui_LogoScreen, LV_SCR_LOAD_ANIM_NONE, 0, 0, &ui_LogoScreen_screen_init);
 }
 }
 void ui_event_TimerStartBtn( lv_event_t * e) {
@@ -110,6 +129,19 @@ if ( event_code == LV_EVENT_CLICKED) {
       TimerResetHandle( e );
 }
 }
+void ui_event_LogoNextBtn( lv_event_t * e) {
+    lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
+if ( event_code == LV_EVENT_CLICKED) {
+      LogoNextHandle( e );
+}
+}
+void ui_event_LogoExitImg( lv_event_t * e) {
+    lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
+if ( event_code == LV_EVENT_CLICKED) {
+      _ui_screen_change( &ui_HomeScreen, LV_SCR_LOAD_ANIM_NONE, 0, 0, &ui_HomeScreen_screen_init);
+      exitLogo( e );
+}
+}
 
 ///////////////////// SCREENS ////////////////////
 
@@ -120,6 +152,7 @@ lv_theme_t *theme = lv_theme_basic_init(dispp);
 lv_disp_set_theme(dispp, theme);
 ui_HomeScreen_screen_init();
 ui_TimerScreen_screen_init();
+ui_LogoScreen_screen_init();
 ui____initial_actions0 = lv_obj_create(NULL);
 lv_disp_load_scr( ui_HomeScreen);
 }

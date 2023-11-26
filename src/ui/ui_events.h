@@ -13,10 +13,14 @@ extern "C"
 
     extern bool isTimerRunning;
     extern bool isTimerReset;
+    extern bool isLogoNext;
+    extern bool isLogoReset;
 
     void TimerStartHandle(lv_event_t *e);
     void TimerStopHandle(lv_event_t *e);
     void TimerResetHandle(lv_event_t *e);
+    void LogoNextHandle(lv_event_t *e);
+    void exitLogo(lv_event_t *e);
 
 #ifdef __cplusplus
 } /*extern "C"*/

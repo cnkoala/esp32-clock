@@ -1,5 +1,6 @@
 SET(SOURCES screens/ui_HomeScreen.c
     screens/ui_TimerScreen.c
+    screens/ui_LogoScreen.c
     ui.c
     components/ui_comp_hook.c
     ui_helpers.c
@@ -12,9 +13,12 @@ SET(SOURCES screens/ui_HomeScreen.c
     images/ui_img_1560645021.c
     images/ui_img_menu_line_png.c
     images/ui_img_clock_fill_png.c
+    images/ui_img_bmw_png.c
     images/ui_img_car_png.c
     images/ui_img_stop_png.c
     images/ui_img_400942075.c
+    images/ui_img_next_png.c
+    images/ui_img_exitblack_png.c
     fonts/ui_font_Big.c
     fonts/ui_font_Medium.c
     fonts/ui_font_Number.c
