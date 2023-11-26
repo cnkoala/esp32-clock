@@ -46,8 +46,8 @@ File myFile;
 #define screenWidth 480
 #define screenHeight 320
 
-uint8_t screenBackLight100 = 90;
-uint8_t screenBackLight255 = 255;
+uint8_t screenBackLight = 230;
+bool isBgadjusted = false;
 
 // create buffer for display
 static lv_disp_draw_buf_t draw_buf;
@@ -233,6 +233,13 @@ void SnapShotScreen()
 // period set
 static uint32_t lastMillis1 = 0;
 static uint32_t lastMillis2 = 0;
+
+// time char
+char timeHour[3];
+char timeMinute[3];
+char timeSecond[3];
+char timeWeekDay[10];
+char timeDate[50];
 
 // wifi set
 static bool isWifiConnected = false;

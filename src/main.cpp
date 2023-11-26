@@ -5,7 +5,7 @@
 #include "main.h"
 #include "time.h"
 
-const char *ssid = "ChinaNet_5G";
+const char *ssid = "ChinaNet";
 const char *password = "87842950";
 
 const char *ntpServer1 = "cn.pool.ntp.org";
@@ -43,12 +43,9 @@ void printLocalTime()
 
   // Serial0.println("Time variables");
 
-  char timeHour[3];
-  char timeMinute[3];
-  char timeWeekDay[10];
-  char timeDate[50];
   strftime(timeHour, 3, "%H", &timeinfo);
   strftime(timeMinute, 3, "%M", &timeinfo);
+  strftime(timeSecond, 3, "%S", &timeinfo);
   strftime(timeWeekDay, 10, "%A", &timeinfo);
   strftime(timeDate, 50, "%B-%d-%Y", &timeinfo);
 
@@ -76,7 +73,7 @@ void setup()
 
   tft.begin();
   tft.setRotation(0);
-  tft.setBrightness(screenBackLight255);
+  tft.setBrightness(screenBackLight);
 
   lv_init();
 
@@ -135,6 +132,9 @@ void loop()
 {
   lv_timer_handler();
 
+  screenBackLight = lv_slider_get_value(ui_BgSlider);
+  tft.setBrightness(screenBackLight);
+
   if (isWifiConnected && !isGotTime)
   {
     configTime(gmtOffset_sec, daylightOffset_sec, ntpServer1, ntpServer2, ntpServer3);
@@ -162,6 +162,8 @@ void loop()
   if (millis() - lastMillis1 > 1000)
   {
     lastMillis1 = millis();
+
+    log_i("Brightness: %d", screenBackLight);
 
     if (WiFi.status() == WL_CONNECTED)
     {
@@ -207,6 +209,25 @@ void loop()
       lv_label_set_text_fmt(ui_TImeSecond, "%02d", timerSecond);
       lv_label_set_text_fmt(ui_TImeMinute, "%02d", timerMintue);
       lv_label_set_text_fmt(ui_TImeHour, "%02d", timerHour);
+    }
+
+    // brightness adjust
+    if (!isBgadjusted)
+    {
+      if (atoi(timeHour) == 7 && atoi(timeMinute) == 0 && atoi(timeSecond) == 0)
+      {
+        lv_slider_set_value(ui_BgSlider, 230, LV_ANIM_ON);
+        isBgadjusted = true;
+      }
+      else if (atoi(timeHour) == 22 && atoi(timeMinute) == 10 && atoi(timeSecond) == 0)
+      {
+        lv_slider_set_value(ui_BgSlider, 10, LV_ANIM_ON);
+        isBgadjusted = true;
+      }
+      else
+      {
+        isBgadjusted = false;
+      }
     }
   }
 
