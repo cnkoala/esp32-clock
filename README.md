@@ -45,6 +45,26 @@ BTW, Squareline is amazing, that can make UI so easily.
 * **Squareline** source is in the `SquareLineProjects` folder, if you want to modify UI, import the folder to Squareline.
 * **SD card** root files are in the `SDCardFiles` folder. Copy all files to SD root.
 * Rest of these are C/C++ sources.
+* modify some code in `lv_fs_fatfs.c`, which is in LVGL library:
+  
+    ~~~ C
+    static void *fs_dir_open(lv_fs_drv_t *drv, const char *path)
+    {
+        LV_UNUSED(drv);
+        FF_DIR *d = lv_mem_alloc(sizeof(FF_DIR));
+        if (d == NULL)
+            return NULL;
+
+        FRESULT res = f_opendir(d, path);
+        if (res != FR_OK)
+        {
+            lv_mem_free(d);
+            d = NULL;
+        }
+        return d;
+    }
+    ~~~
+
 * Put your wifi name and password in `main.h`
 
     ~~~ C
